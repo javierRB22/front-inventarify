@@ -22,8 +22,8 @@ export default function Root() {
 
   return (
     <>
-      <div className="p-5 bg-green-200 fixed top-0 left-0 h-full w-64 shadow-xl">
-        <h1 className="font-bold uppercase font-sans text-gray-800 text-2xl mb-8 text-center">INVENTARIFY</h1>
+      <div className="bg-green-200 fixed top-0 left-0 h-full w-64 shadow-xl">
+        <h1 className="font-bold uppercase text-gray-800 text-2xl mb-8 text-center">INVENTARIFY</h1>
         <nav className="space-y-6 flex flex-col items-center">
           <NavLink
             to="./Product"
@@ -35,7 +35,7 @@ export default function Root() {
             to="./Category"
             className="block text-gray-800 hover:text-green-600 transition-colors text-lg font-semibold"
           >
-            Categorias
+            Categorías
           </NavLink>
           <NavLink
             to="./Clientes"
@@ -65,21 +65,21 @@ export default function Root() {
             to="./Facturas"
             className="block text-gray-800 hover:text-green-600 transition-colors text-lg font-semibold"
           >
-            Factura
+            Facturas
           </NavLink>
         </nav>
         
-        <div className="absolute bottom-10 left-0 w-full">
+        <div className="absolute bottom-4 left-0 w-60">
           <button 
             onClick={handleLogout}
-            className="block w-full text-center text-red-600 hover:text-red-800 transition-colors text-lg font-semibold focus:outline-none"
+            className="w-full py-2 text-center text-white bg-red-600 hover:bg-red-800 transition-colors text-lg font-semibold rounded-lg shadow-lg focus:outline-none"
           >
             Salir
           </button>
         </div>
       </div>
 
-      <div id="detail" className="ml-64 p-10 w-full min-h-screen bg-gray-100">
+      <div id="detail" className="ml-64 p-10">
         <Outlet />
       </div>
     </>
