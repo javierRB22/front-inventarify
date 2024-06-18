@@ -1,8 +1,10 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
 import Axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  let navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginStatus, setLoginStatus] = useState("");
@@ -13,11 +15,15 @@ const Login = () => {
       email: email,
       password: password,
     }).then((response) => {
+      console.log(response)
+      //MENSAJE DE ERROR
       if (response.data.message) {
+        console.log("Mensaje 1")
         setLoginStatus(response.data.message);
       } else {
+        //MENSAJE DE CORREO VALIDADO
         setLoginStatus(response.data[0].email);
-       
+        navigate('/dashboard')
       }
     });
   }
@@ -27,16 +33,16 @@ const Login = () => {
       <div className="w-full md:w-3/4 lg:w-1/2 bg-white rounded-lg shadow-xl p-10">
         <form>
           <div className="flex flex-col items-center mb-6">
-            <p className="text-2xl font-extrabold text-gray-800 mb-4">Ingresa con tu cuenta!</p>
-            <p>
-              <h1 className="text-red-500 text-lg text-center mt-2">{loginStatus}</h1>
-            </p>
+          <h1 className="text-3xl font-extrabold text-center w-full text-gray-800">INGRESA CON TU CUENTA</h1>
+          <h2 className="text-red-500 text-lg text-center mt-2">{loginStatus}</h2>
+
           </div>
           <div className="mb-6">
             <input
               type="email"
               className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
               placeholder="Digita tu correo"
+              value={email}
               onChange={(e) => { setEmail(e.target.value) }} required
             />
           </div>
@@ -45,6 +51,7 @@ const Login = () => {
               type="password"
               className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
               placeholder="Digita tu contraseña"
+              value={password}
               onChange={(e) => { setPassword(e.target.value) }} required
             />
           </div>
