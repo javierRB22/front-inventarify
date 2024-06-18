@@ -1,0 +1,70 @@
+// eslint-disable-next-line no-unused-vars
+import React, { useState } from "react";
+import Axios from "axios";
+
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loginStatus, setLoginStatus] = useState("");
+
+  const login = (e) => {
+    e.preventDefault();
+    Axios.post("http://localhost:3001/api/login", {
+      email: email,
+      password: password,
+    }).then((response) => {
+      if (response.data.message) {
+        setLoginStatus(response.data.message);
+      } else {
+        setLoginStatus(response.data[0].email);
+       
+      }
+    });
+  }
+
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="w-full md:w-3/4 lg:w-1/2 bg-white rounded-lg shadow-xl p-10">
+        <form>
+          <div className="flex flex-col items-center mb-6">
+            <p className="text-2xl font-extrabold text-gray-800 mb-4">Ingresa con tu cuenta!</p>
+            <p>
+              <h1 className="text-red-500 text-lg text-center mt-2">{loginStatus}</h1>
+            </p>
+          </div>
+          <div className="mb-6">
+            <input
+              type="email"
+              className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+              placeholder="Digita tu correo"
+              onChange={(e) => { setEmail(e.target.value) }} required
+            />
+          </div>
+          <div className="mb-6">
+            <input
+              type="password"
+              className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+              placeholder="Digita tu contraseña"
+              onChange={(e) => { setPassword(e.target.value) }} required
+            />
+          </div>
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex items-center">
+              <input className="mr-2" type="checkbox" value="" />
+              <label className="text-gray-700 text-lg">Remember me</label>
+            </div>
+            <a href="#" className="text-blue-500 hover:text-blue-700 text-lg">Olvidaste tu contraseña?</a>
+          </div>
+          <div className="text-center mt-4 pt-2">
+            <button type="button" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg text-lg" onClick={login}>
+              Login
+            </button>
+            <p className="text-lg font-bold mt-4 mb-0">No tienes una cuenta Aun? <a href="SignUp" className="text-green-500 hover:text-green-700">Registrate</a></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default Login;
