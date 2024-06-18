@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
 import { getProveedores, createProveedor, updateProveedor, deleteProveedor } from '../services/ServicioProveedor';
+import Swal from 'sweetalert2';
 
 const ListaProveedor = () => {
   const [proveedores, setProveedores] = useState([]);
@@ -21,20 +22,74 @@ const ListaProveedor = () => {
   };
 
   const handleCreate = async () => {
-    await createProveedor(newProveedor);
-    loadProveedores();
-    setNewProveedor({ nombre: '', direccion: '', telefono: '' });
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¿Quieres añadir este proveedor?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, añadir',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await createProveedor(newProveedor);
+        loadProveedores();
+        setNewProveedor({ nombre: '', direccion: '', telefono: '' });
+        Swal.fire(
+          '¡Añadido!',
+          'El proveedor ha sido añadido.',
+          'success'
+        );
+      }
+    });
   };
 
   const handleUpdate = async (id) => {
-    const proveedor = proveedores.find(prov => prov.id === id);
-    await updateProveedor(id, proveedor);
-    loadProveedores();
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¿Quieres editar este proveedor?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, editar',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const proveedor = proveedores.find(prov => prov.id === id);
+        await updateProveedor(id, proveedor);
+        loadProveedores();
+        Swal.fire(
+          '¡Editado!',
+          'El proveedor ha sido editado.',
+          'success'
+        );
+      }
+    });
   };
 
   const handleDelete = async (id) => {
-    await deleteProveedor(id);
-    loadProveedores();
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¿Quieres eliminar este proveedor?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await deleteProveedor(id);
+        loadProveedores();
+        Swal.fire(
+          '¡Eliminado!',
+          'El proveedor ha sido eliminado.',
+          'success'
+        );
+      }
+    });
   };
 
   const handleProveedorChange = (id, field, value) => {

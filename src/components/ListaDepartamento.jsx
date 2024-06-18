@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
 import { getDepartamentos, createDepartamento, updateDepartamento, deleteDepartamento } from '../services/ServicioDepartamento';
+import Swal from 'sweetalert2';
 
 const ListaDepartamento = () => {
   const [departamentos, setDepartamentos] = useState([]);
@@ -21,20 +22,74 @@ const ListaDepartamento = () => {
   };
 
   const handleCreate = async () => {
-    await createDepartamento(newDepartamento);
-    loadDepartamentos();
-    setNewDepartamento({ nombre: '', descripcion: '' });
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¿Quieres añadir este departamento?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, añadir',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await createDepartamento(newDepartamento);
+        loadDepartamentos();
+        setNewDepartamento({ nombre: '', descripcion: '' });
+        Swal.fire(
+          '¡Añadido!',
+          'El departamento ha sido añadido.',
+          'success'
+        );
+      }
+    });
   };
 
   const handleUpdate = async (id) => {
-    const departamento = departamentos.find(dep => dep.id === id);
-    await updateDepartamento(id, departamento);
-    loadDepartamentos();
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¿Quieres editar este departamento?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, editar',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const departamento = departamentos.find(dep => dep.id === id);
+        await updateDepartamento(id, departamento);
+        loadDepartamentos();
+        Swal.fire(
+          '¡Editado!',
+          'El departamento ha sido editado.',
+          'success'
+        );
+      }
+    });
   };
 
   const handleDelete = async (id) => {
-    await deleteDepartamento(id);
-    loadDepartamentos();
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¿Quieres eliminar este departamento?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await deleteDepartamento(id);
+        loadDepartamentos();
+        Swal.fire(
+          '¡Eliminado!',
+          'El departamento ha sido eliminado.',
+          'success'
+        );
+      }
+    });
   };
 
   const handleDepartamentoChange = (id, field, value) => {

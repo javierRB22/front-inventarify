@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
 import { getClientes, createCliente, updateCliente, deleteCliente } from '../services/ServicioCliente';
+import Swal from 'sweetalert2';
 
 const ListaCliente = () => {
   const [clientes, setClientes] = useState([]);
@@ -21,20 +22,74 @@ const ListaCliente = () => {
   };
 
   const handleCreate = async () => {
-    await createCliente(newCliente);
-    loadClientes();
-    setNewCliente({ nombre: '', apellido: '', direccion: '', email: '', telefono: '' });
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¿Quieres añadir este cliente?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, añadir',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await createCliente(newCliente);
+        loadClientes();
+        setNewCliente({ nombre: '', apellido: '', direccion: '', email: '', telefono: '' });
+        Swal.fire(
+          '¡Añadido!',
+          'El cliente ha sido añadido.',
+          'success'
+        );
+      }
+    });
   };
 
   const handleUpdate = async (id) => {
-    const cliente = clientes.find(cli => cli.id === id);
-    await updateCliente(id, cliente);
-    loadClientes();
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¿Quieres editar este cliente?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, editar',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const cliente = clientes.find(cli => cli.id === id);
+        await updateCliente(id, cliente);
+        loadClientes();
+        Swal.fire(
+          '¡Editado!',
+          'El cliente ha sido editado.',
+          'success'
+        );
+      }
+    });
   };
 
   const handleDelete = async (id) => {
-    await deleteCliente(id);
-    loadClientes();
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¿Quieres eliminar este cliente?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await deleteCliente(id);
+        loadClientes();
+        Swal.fire(
+          '¡Eliminado!',
+          'El cliente ha sido eliminado.',
+          'success'
+        );
+      }
+    });
   };
 
   const handleClienteChange = (id, field, value) => {

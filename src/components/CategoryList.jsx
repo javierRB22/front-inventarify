@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../services/categoryService';
+import Swal from 'sweetalert2';
 
 const CategoryList = () => {
   const [categories, setCategories] = useState([]);
@@ -21,20 +22,74 @@ const CategoryList = () => {
   };
 
   const handleCreate = async () => {
-    await createCategory(newCategory);
-    loadCategories();
-    setNewCategory({ nombre: '', descripcion: '' });
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¿Quieres añadir esta categoría?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, añadir',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await createCategory(newCategory);
+        loadCategories();
+        setNewCategory({ nombre: '', descripcion: '' });
+        Swal.fire(
+          '¡Añadido!',
+          'La categoría ha sido añadida.',
+          'success'
+        );
+      }
+    });
   };
 
   const handleUpdate = async (id) => {
-    const category = categories.find(cat => cat.id === id);
-    await updateCategory(id, category);
-    loadCategories();
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¿Quieres editar esta categoría?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, editar',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const category = categories.find(cat => cat.id === id);
+        await updateCategory(id, category);
+        loadCategories();
+        Swal.fire(
+          '¡Editado!',
+          'La categoría ha sido editada.',
+          'success'
+        );
+      }
+    });
   };
 
   const handleDelete = async (id) => {
-    await deleteCategory(id);
-    loadCategories();
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¿Quieres eliminar esta categoría?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await deleteCategory(id);
+        loadCategories();
+        Swal.fire(
+          '¡Eliminado!',
+          'La categoría ha sido eliminada.',
+          'success'
+        );
+      }
+    });
   };
 
   const handleCategoryChange = (id, field, value) => {
@@ -46,7 +101,7 @@ const CategoryList = () => {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen overflow-x-hidden animate-fade-in-left">
-      <h2 className="text-3xl font-bold text-center mb-8">Categories</h2>
+      <h2 className="text-3xl font-bold text-center mb-8">Categorías</h2>
       <div className="bg-white p-6 rounded-lg shadow-lg mb-8">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <input

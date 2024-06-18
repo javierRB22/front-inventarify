@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
 import { getVentas, createVenta, updateVenta, deleteVenta } from '../services/ServicioVenta';
+import Swal from 'sweetalert2';
 
 const ListaVenta = () => {
   const [ventas, setVentas] = useState([]);
@@ -21,20 +22,74 @@ const ListaVenta = () => {
   };
 
   const handleCreate = async () => {
-    await createVenta(newVenta);
-    loadVentas();
-    setNewVenta({ fecha_venta: '', total_ventas: '' });
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¿Quieres añadir esta venta?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, añadir',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await createVenta(newVenta);
+        loadVentas();
+        setNewVenta({ fecha_venta: '', total_ventas: '' });
+        Swal.fire(
+          '¡Añadida!',
+          'La venta ha sido añadida.',
+          'success'
+        );
+      }
+    });
   };
 
   const handleUpdate = async (id) => {
-    const venta = ventas.find(v => v.id === id);
-    await updateVenta(id, venta);
-    loadVentas();
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¿Quieres editar esta venta?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, editar',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const venta = ventas.find(v => v.id === id);
+        await updateVenta(id, venta);
+        loadVentas();
+        Swal.fire(
+          '¡Editada!',
+          'La venta ha sido editada.',
+          'success'
+        );
+      }
+    });
   };
 
   const handleDelete = async (id) => {
-    await deleteVenta(id);
-    loadVentas();
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¿Quieres eliminar esta venta?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await deleteVenta(id);
+        loadVentas();
+        Swal.fire(
+          '¡Eliminada!',
+          'La venta ha sido eliminada.',
+          'success'
+        );
+      }
+    });
   };
 
   const handleVentaChange = (id, field, value) => {

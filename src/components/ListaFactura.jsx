@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
 import { getFacturas, createFactura, updateFactura, deleteFactura } from '../services/ServicioFactura';
+import Swal from 'sweetalert2';
 
 const ListaFactura = () => {
   const [facturas, setFacturas] = useState([]);
@@ -21,20 +22,74 @@ const ListaFactura = () => {
   };
 
   const handleCreate = async () => {
-    await createFactura(newFactura);
-    loadFacturas();
-    setNewFactura({ Fecha: '', Cantidad_Producto: '', Cliente: '' });
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¿Quieres añadir esta factura?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, añadir',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await createFactura(newFactura);
+        loadFacturas();
+        setNewFactura({ Fecha: '', Cantidad_Producto: '', Cliente: '' });
+        Swal.fire(
+          '¡Añadida!',
+          'La factura ha sido añadida.',
+          'success'
+        );
+      }
+    });
   };
 
   const handleUpdate = async (id) => {
-    const factura = facturas.find(fac => fac.id === id);
-    await updateFactura(id, factura);
-    loadFacturas();
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¿Quieres editar esta factura?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, editar',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const factura = facturas.find(fac => fac.id === id);
+        await updateFactura(id, factura);
+        loadFacturas();
+        Swal.fire(
+          '¡Editada!',
+          'La factura ha sido editada.',
+          'success'
+        );
+      }
+    });
   };
 
   const handleDelete = async (id) => {
-    await deleteFactura(id);
-    loadFacturas();
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¿Quieres eliminar esta factura?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await deleteFactura(id);
+        loadFacturas();
+        Swal.fire(
+          '¡Eliminada!',
+          'La factura ha sido eliminada.',
+          'success'
+        );
+      }
+    });
   };
 
   const handleFacturaChange = (id, field, value) => {
