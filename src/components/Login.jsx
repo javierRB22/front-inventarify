@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const Login = () => {
   let navigate = useNavigate();
@@ -15,27 +16,32 @@ const Login = () => {
       email: email,
       password: password,
     }).then((response) => {
-      console.log(response)
-      //MENSAJE DE ERROR
+      console.log(response);
       if (response.data.message) {
-        console.log("Mensaje 1")
         setLoginStatus(response.data.message);
       } else {
-        //MENSAJE DE CORREO VALIDADO
         setLoginStatus(response.data[0].email);
-        navigate('/dashboard')
+        Swal.fire({
+          title: 'Inicio de sesión exitoso',
+          text: 'Bienvenido/a ' + response.data[0].email,
+          icon: 'success',
+          confirmButtonText: 'OK'
+        }).then(() => {
+          navigate('/dashboard');
+        });
       }
+    }).catch(() => {
+      setLoginStatus("Error al iniciar sesión");
     });
-  }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full md:w-3/4 lg:w-1/2 bg-white rounded-lg shadow-xl p-10">
         <form>
           <div className="flex flex-col items-center mb-6">
-          <h1 className="text-3xl font-extrabold text-center w-full text-gray-800">INGRESA CON TU CUENTA</h1>
-          <h2 className="text-red-500 text-lg text-center mt-2">{loginStatus}</h2>
-
+            <h1 className="text-3xl font-extrabold text-center w-full text-gray-800">INGRESA CON TU CUENTA</h1>
+            <h2 className="text-red-500 text-lg text-center mt-2">{loginStatus}</h2>
           </div>
           <div className="mb-6">
             <input

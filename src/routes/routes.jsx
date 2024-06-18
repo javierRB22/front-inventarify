@@ -1,7 +1,25 @@
 import { NavLink } from "react-router-dom";
 import { Outlet } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export default function Root() {
+  const handleLogout = () => {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¿Quieres salir de la aplicación?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, salir',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = '/';
+      }
+    });
+  };
+
   return (
     <>
       <div className="p-5 bg-green-200 fixed top-0 left-0 h-full w-64 shadow-xl">
@@ -53,7 +71,7 @@ export default function Root() {
         
         <div className="absolute bottom-10 left-0 w-full">
           <button 
-            onClick={() => window.location.href = '/'}
+            onClick={handleLogout}
             className="block w-full text-center text-red-600 hover:text-red-800 transition-colors text-lg font-semibold focus:outline-none"
           >
             Salir

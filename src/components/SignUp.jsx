@@ -1,26 +1,62 @@
 import { useState } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const SignUp = () => {
-
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [registerStatus, setRegisterStatus] = useState(null);
+  const [error, setError] = useState(null);
+
+  const validateEmail = (email) => {
+    const re = /\S+@\S+\.\S+/;
+    return re.test(email);
+  };
+
+  const validatePassword = (password) => {
+    return password.length >= 6;
+  };
 
   function register() {
-    console.log(name, email, password);
+    if (!name || !email || !password) {
+      setError("Todos los campos son obligatorios");
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setError("Email inválido");
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      setError("La contraseña debe tener al menos 6 caracteres");
+      return;
+    }
+
+    setError(null);
+
     axios.post("http://localhost:3001/api/register", {
       email,
       name,
       password,
     }).then((response) => {
-      console.log(response);
       if (response.data.message) {
-        setRegisterStatus(response.data.message);
+        setError(response.data.message);
       } else {
-        setRegisterStatus("ACCOUNT CREATED SUCCESSFULLY");
+        Swal.fire({
+          title: 'Registro exitoso',
+          text: 'Su cuenta ha sido creada con éxito',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        }).then(() => {
+          setEmail("");
+          setName("");
+          setPassword("");
+          window.location.reload();
+        });
       }
+    }).catch(() => {
+      setError("Error al crear la cuenta");
     });
   }
 
@@ -32,14 +68,17 @@ const SignUp = () => {
             <div className="flex items-center mb-6">
               <h1 className="text-3xl font-extrabold text-center w-full text-gray-800">CREA TU CUENTA</h1>
             </div>
-            <div className="mb-6">
-              <p className="text-center text-green-500 text-lg">{registerStatus}</p>
-            </div>
+            {error && (
+              <div className="mb-6">
+                <p className="text-center text-red-500 text-lg">{error}</p>
+              </div>
+            )}
             <div className="mb-6">
               <input
                 type="text"
                 className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
                 placeholder="Ingrese su nombre"
+                value={name}
                 onChange={(e) => { setName(e.target.value) }} required
               />
             </div>
@@ -47,14 +86,18 @@ const SignUp = () => {
               <input
                 type="email"
                 className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
-                onChange={(e) => { setEmail(e.target.value) }} placeholder="Ingrese su Email" required
+                placeholder="Ingrese su Email"
+                value={email}
+                onChange={(e) => { setEmail(e.target.value) }} required
               />
             </div>
             <div className="mb-6">
               <input
                 type="password"
                 className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
-                onChange={(e) => { setPassword(e.target.value) }} placeholder="Ingrese su contraseña" required
+                placeholder="Ingrese su contraseña"
+                value={password}
+                onChange={(e) => { setPassword(e.target.value) }} required
               />
             </div>
             <div className="flex justify-between items-center mb-6">

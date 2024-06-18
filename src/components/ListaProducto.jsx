@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
 import { getProductos, createProducto, updateProducto, deleteProducto } from '../services/ServicioProducto';
+import Swal from 'sweetalert2';
 
 const ListaProducto = () => {
   const [productos, setProductos] = useState([]);
@@ -21,20 +22,74 @@ const ListaProducto = () => {
   };
 
   const handleCreate = async () => {
-    await createProducto(newProducto);
-    loadProductos();
-    setNewProducto({ nombre: '', descripcion: '', precio: '', proveedor: '', cantidad_inventario: '' });
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¿Quieres añadir este producto?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, añadir',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await createProducto(newProducto);
+        loadProductos();
+        setNewProducto({ nombre: '', descripcion: '', precio: '', proveedor: '', cantidad_inventario: '' });
+        Swal.fire(
+          '¡Añadido!',
+          'El producto ha sido añadido.',
+          'success'
+        );
+      }
+    });
   };
 
   const handleUpdate = async (id) => {
-    const producto = productos.find(prod => prod.id === id);
-    await updateProducto(id, producto);
-    loadProductos();
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¿Quieres editar este producto?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, editar',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const producto = productos.find(prod => prod.id === id);
+        await updateProducto(id, producto);
+        loadProductos();
+        Swal.fire(
+          '¡Editado!',
+          'El producto ha sido editado.',
+          'success'
+        );
+      }
+    });
   };
 
   const handleDelete = async (id) => {
-    await deleteProducto(id);
-    loadProductos();
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¿Quieres eliminar este producto?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await deleteProducto(id);
+        loadProductos();
+        Swal.fire(
+          '¡Eliminado!',
+          'El producto ha sido eliminado.',
+          'success'
+        );
+      }
+    });
   };
 
   const handleProductoChange = (id, field, value) => {
@@ -45,10 +100,10 @@ const ListaProducto = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen overflow-x-hidden">
+    <div className="p-6 bg-gray-100 min-h-screen overflow-x-hidden animate-fade-in-left">
       <h2 className="text-3xl font-bold text-center mb-8">Productos</h2>
       <div className="bg-white p-6 rounded-lg shadow-lg mb-8">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 ">
           <input
             type="text"
             name="nombre"
@@ -120,7 +175,7 @@ const ListaProducto = () => {
                 className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
               />
               <input
-                type="number"
+                type="text"
                 value={producto.proveedor}
                 onChange={(e) => handleProductoChange(producto.id, 'proveedor', e.target.value)}
                 className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
