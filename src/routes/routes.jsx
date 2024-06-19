@@ -17,7 +17,7 @@ export default function Root() {
       // Limpiamos el estilo al desmontar el componente
       document.body.style.overflowX = "auto";
     };
-  }, []);
+  }, [navigate]);
 
   const handleLogout = () => {
     Swal.fire({
