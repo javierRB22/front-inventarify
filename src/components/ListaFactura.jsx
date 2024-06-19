@@ -100,7 +100,7 @@ const ListaFactura = () => {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen overflow-x-hidden animate-fade-in-left">
-      <h2 className="text-3xl font-bold text-center mb-8">Facturas</h2>
+      <h2 className="text-3xl font-bold text-center mb-8">FACTURAS</h2>
       <div className="bg-white p-6 rounded-lg shadow-lg mb-8">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
           <input
