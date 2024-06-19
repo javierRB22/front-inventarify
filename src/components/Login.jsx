@@ -99,7 +99,7 @@ const Login = () => {
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center">
               <input className="mr-2" type="checkbox" value="" />
-              <label className="text-gray-700 text-lg">Remember me</label>
+              <label className="text-gray-700 text-lg">Recordar</label>
             </div>
             <a href="#" className="text-blue-500 hover:text-blue-700 text-lg">Olvidaste tu contraseña?</a>
           </div>
@@ -107,7 +107,7 @@ const Login = () => {
             <button type="button" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg text-lg" onClick={login}>
               Iniciar sesión
             </button>
-            <p className="text-lg font-bold mt-4 mb-0">No tienes una cuenta Aun? <a href="SignUp" className="text-green-500 hover:text-green-700">Registrate</a></p>
+            <p className="text-lg font-bold mt-4 mb-0">No tienes una cuenta aun? <a href="SignUp" className="text-green-500 hover:text-green-700">Registrate</a></p>
           </div>
         </form>
       </div>
