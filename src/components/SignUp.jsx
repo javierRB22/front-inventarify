@@ -1,6 +1,9 @@
-import { useState } from "react";
+// eslint-disable-next-line no-unused-vars
+import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import backgroundImg from '../assets/imagenes/signUp.svg'
+
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -17,7 +20,7 @@ const SignUp = () => {
     return password.length >= 6;
   };
 
-  function register() {
+  const register = () => {
     if (!name || !email || !password) {
       setError("Todos los campos son obligatorios");
       return;
@@ -58,13 +61,17 @@ const SignUp = () => {
     }).catch(() => {
       setError("Error al crear la cuenta");
     });
-  }
+  };
 
   return (
-    <>
-      <div className="flex items-center justify-center min-h-screen bg-grey-200">
-        <div className="w-full md:w-3/4 lg:w-1/2 bg-white rounded-lg shadow-xl p-10">
-          <form>
+    <div className="flex items-center justify-center min-h-screen h-screen bg-grey-200">
+      <div className="flex w-full h-full">
+        <div className="w-3/5 h-full">
+
+          <img src={backgroundImg} alt="Background" className="object-cover w-full" />
+        </div>
+        <div className="w-2/5 h-full bg-white rounded-l-lg shadow-xl p-10 flex items-center justify-center">
+          <form className="w-full">
             <div className="flex items-center mb-6">
               <h1 className="text-3xl font-extrabold text-center w-full text-gray-800">CREA TU CUENTA</h1>
             </div>
@@ -116,7 +123,7 @@ const SignUp = () => {
           </form>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
