@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 const ListaVenta = () => {
   const [ventas, setVentas] = useState([]);
   const [newVenta, setNewVenta] = useState({ fecha_venta: '', total_ventas: '' });
+  const [editMode, setEditMode] = useState(null);
 
   useEffect(() => {
     loadVentas();
@@ -21,79 +22,77 @@ const ListaVenta = () => {
     setNewVenta({ ...newVenta, [name]: value });
   };
 
-  const handleCreate = async () => {
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: "¿Quieres añadir esta venta?",
+  const confirmAction = async (title, text, confirmButtonText, actionFunction, id = null) => {
+    await Swal.fire({
+      title,
+      text,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, añadir',
+      confirmButtonText,
       cancelButtonText: 'Cancelar'
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await createVenta(newVenta);
-        loadVentas();
-        setNewVenta({ fecha_venta: '', total_ventas: '' });
-        Swal.fire(
-          '¡Añadida!',
-          'La venta ha sido añadida.',
-          'success'
-        );
+        if (id === null) {
+          await actionFunction(newVenta);
+          setNewVenta({ fecha_venta: '', total_ventas: '' });
+          await loadVentas(); // Actualiza la lista después de añadir
+          Swal.fire(
+            '¡Añadida!',
+            'La venta ha sido añadida.',
+            'success'
+          );
+        } else {
+          const venta = ventas.find(v => v.id === id);
+          await actionFunction(id, venta);
+          await loadVentas(); // Actualiza la lista después de editar
+          setEditMode(null); // Salir del modo de edición
+          Swal.fire(
+            '¡Guardado!',
+            'La venta ha sido guardada.',
+            'success'
+          );
+        }
       }
     });
+  };
+
+  const handleCreate = async () => {
+    confirmAction(
+      '¿Estás seguro?',
+      '¿Quieres añadir esta venta?',
+      'Sí, añadir',
+      createVenta
+    );
   };
 
   const handleUpdate = async (id) => {
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: "¿Quieres editar esta venta?",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, editar',
-      cancelButtonText: 'Cancelar'
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        const venta = ventas.find(v => v.id === id);
-        await updateVenta(id, venta);
-        loadVentas();
-        Swal.fire(
-          '¡Editada!',
-          'La venta ha sido editada.',
-          'success'
-        );
-      }
-    });
+    setEditMode(id);
+  };
+
+  const handleSave = async (id) => {
+    confirmAction(
+      '¿Estás seguro?',
+      '¿Quieres guardar los cambios en esta venta?',
+      'Sí, guardar',
+      updateVenta,
+      id
+    );
   };
 
   const handleDelete = async (id) => {
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: "¿Quieres eliminar esta venta?",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        await deleteVenta(id);
-        loadVentas();
-        Swal.fire(
-          '¡Eliminada!',
-          'La venta ha sido eliminada.',
-          'success'
-        );
-      }
-    });
+    confirmAction(
+      '¿Estás seguro?',
+      '¿Quieres eliminar esta venta?',
+      'Sí, eliminar',
+      deleteVenta,
+      id
+    );
   };
 
   const handleVentaChange = (id, field, value) => {
-    const updatedVentas = ventas.map(v => 
+    const updatedVentas = ventas.map(v =>
       v.id === id ? { ...v, [field]: value } : v
     );
     setVentas(updatedVentas);
@@ -121,8 +120,8 @@ const ListaVenta = () => {
             className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
-        <button 
-          onClick={handleCreate} 
+        <button
+          onClick={handleCreate}
           className="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
         >
           Añadir Venta
@@ -131,27 +130,45 @@ const ListaVenta = () => {
       <ul className="space-y-4">
         {ventas.map(venta => (
           <li key={venta.id} className="bg-white p-4 rounded-lg shadow-lg flex flex-col sm:flex-row sm:items-center sm:justify-between">
-            <input
-              type="date"
-              value={venta.fecha_venta}
-              onChange={(e) => handleVentaChange(venta.id, 'fecha_venta', e.target.value)}
-              className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
-            <input
-              type="number"
-              value={venta.total_ventas}
-              onChange={(e) => handleVentaChange(venta.id, 'total_ventas', e.target.value)}
-              className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
+            {editMode !== venta.id ? (
+              <>
+                <div>{venta.fecha_venta}</div>
+                <div>{venta.total_ventas}</div>
+              </>
+            ) : (
+              <>
+                <input
+                  type="date"
+                  value={venta.fecha_venta}
+                  onChange={(e) => handleVentaChange(venta.id, 'fecha_venta', e.target.value)}
+                  className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+                <input
+                  type="number"
+                  value={venta.total_ventas}
+                  onChange={(e) => handleVentaChange(venta.id, 'total_ventas', e.target.value)}
+                  className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </>
+            )}
             <div className="mt-4 sm:mt-0 sm:ml-4 flex space-x-2">
-              <button 
-                onClick={() => handleUpdate(venta.id)} 
-                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
-              >
-                Editar
-              </button>
-              <button 
-                onClick={() => handleDelete(venta.id)} 
+              {editMode !== venta.id ? (
+                <button
+                  onClick={() => handleUpdate(venta.id)}
+                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
+                >
+                  Editar
+                </button>
+              ) : (
+                <button
+                  onClick={() => handleSave(venta.id)}
+                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
+                >
+                  Guardar
+                </button>
+              )}
+              <button
+                onClick={() => handleDelete(venta.id)}
                 className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
               >
                 Eliminar

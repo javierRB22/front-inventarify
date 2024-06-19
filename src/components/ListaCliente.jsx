@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 const ListaCliente = () => {
   const [clientes, setClientes] = useState([]);
   const [newCliente, setNewCliente] = useState({ nombre: '', apellido: '', direccion: '', email: '', telefono: '' });
+  const [editMode, setEditMode] = useState({});
 
   useEffect(() => {
     loadClientes();
@@ -60,6 +61,7 @@ const ListaCliente = () => {
         const cliente = clientes.find(cli => cli.id === id);
         await updateCliente(id, cliente);
         loadClientes();
+        setEditMode({ ...editMode, [id]: false });
         Swal.fire(
           '¡Editado!',
           'El cliente ha sido editado.',
@@ -155,43 +157,66 @@ const ListaCliente = () => {
       <ul className="space-y-4">
         {clientes.map(cliente => (
           <li key={cliente.id} className="bg-white p-4 rounded-lg shadow-lg flex flex-col sm:flex-row sm:items-center sm:justify-between">
-            <input
-              type="text"
-              value={cliente.nombre}
-              onChange={(e) => handleClienteChange(cliente.id, 'nombre', e.target.value)}
-              className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
-            <input
-              type="text"
-              value={cliente.apellido}
-              onChange={(e) => handleClienteChange(cliente.id, 'apellido', e.target.value)}
-              className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
-            <input
-              type="text"
-              value={cliente.direccion}
-              onChange={(e) => handleClienteChange(cliente.id, 'direccion', e.target.value)}
-              className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
-            <input
-              type="text"
-              value={cliente.email}
-              onChange={(e) => handleClienteChange(cliente.id, 'email', e.target.value)}
-              className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
-            <input
-              type="text"
-              value={cliente.telefono}
-              onChange={(e) => handleClienteChange(cliente.id, 'telefono', e.target.value)}
-              className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+              {editMode[cliente.id] ? (
+                <>
+                  <input
+                    type="text"
+                    value={cliente.nombre}
+                    onChange={(e) => handleClienteChange(cliente.id, 'nombre', e.target.value)}
+                    className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                  <input
+                    type="text"
+                    value={cliente.apellido}
+                    onChange={(e) => handleClienteChange(cliente.id, 'apellido', e.target.value)}
+                    className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                  <input
+                    type="text"
+                    value={cliente.direccion}
+                    onChange={(e) => handleClienteChange(cliente.id, 'direccion', e.target.value)}
+                    className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                  <input
+                    type="text"
+                    value={cliente.email}
+                    onChange={(e) => handleClienteChange(cliente.id, 'email', e.target.value)}
+                    className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                  <input
+                    type="text"
+                    value={cliente.telefono}
+                    onChange={(e) => handleClienteChange(cliente.id, 'telefono', e.target.value)}
+                    className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </>
+              ) : (
+                <>
+                  <span>{cliente.nombre}</span>
+                  <span>{cliente.apellido}</span>
+                  <span>{cliente.direccion}</span>
+                  <span>{cliente.email}</span>
+                  <span>{cliente.telefono}</span>
+                </>
+              )}
+            </div>
             <div className="mt-4 sm:mt-0 sm:ml-4 flex space-x-2">
-              <button 
-                onClick={() => handleUpdate(cliente.id)} 
-                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
-              >
-                Editar
-              </button>
+              {editMode[cliente.id] ? (
+                <button 
+                  onClick={() => handleUpdate(cliente.id)} 
+                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
+                >
+                  Guardar
+                </button>
+              ) : (
+                <button 
+                  onClick={() => setEditMode({ ...editMode, [cliente.id]: true })} 
+                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
+                >
+                  Editar
+                </button>
+              )}
               <button 
                 onClick={() => handleDelete(cliente.id)} 
                 className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"

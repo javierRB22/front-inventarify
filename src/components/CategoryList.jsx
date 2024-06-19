@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 const CategoryList = () => {
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState({ nombre: '', descripcion: '' });
+  const [editMode, setEditMode] = useState({});
 
   useEffect(() => {
     loadCategories();
@@ -60,6 +61,7 @@ const CategoryList = () => {
         const category = categories.find(cat => cat.id === id);
         await updateCategory(id, category);
         loadCategories();
+        setEditMode({ ...editMode, [id]: false });
         Swal.fire(
           '¡Editado!',
           'La categoría ha sido editada.',
@@ -131,25 +133,44 @@ const CategoryList = () => {
       <ul className="space-y-4">
         {categories.map(category => (
           <li key={category.id} className="bg-white p-4 rounded-lg shadow-lg flex flex-col sm:flex-row sm:items-center sm:justify-between">
-            <input
-              type="text"
-              value={category.nombre}
-              onChange={(e) => handleCategoryChange(category.id, 'nombre', e.target.value)}
-              className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
-            <input
-              type="text"
-              value={category.descripcion}
-              onChange={(e) => handleCategoryChange(category.id, 'descripcion', e.target.value)}
-              className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 flex-1">
+              {editMode[category.id] ? (
+                <input
+                  type="text"
+                  value={category.nombre}
+                  onChange={(e) => handleCategoryChange(category.id, 'nombre', e.target.value)}
+                  className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              ) : (
+                <span>{category.nombre}</span>
+              )}
+              {editMode[category.id] ? (
+                <input
+                  type="text"
+                  value={category.descripcion}
+                  onChange={(e) => handleCategoryChange(category.id, 'descripcion', e.target.value)}
+                  className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              ) : (
+                <span>{category.descripcion}</span>
+              )}
+            </div>
             <div className="mt-4 sm:mt-0 sm:ml-4 flex space-x-2">
-              <button 
-                onClick={() => handleUpdate(category.id)} 
-                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
-              >
-                Editar
-              </button>
+              {editMode[category.id] ? (
+                <button 
+                  onClick={() => handleUpdate(category.id)} 
+                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
+                >
+                  Guardar
+                </button>
+              ) : (
+                <button 
+                  onClick={() => setEditMode({ ...editMode, [category.id]: true })} 
+                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
+                >
+                  Editar
+                </button>
+              )}
               <button 
                 onClick={() => handleDelete(category.id)} 
                 className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"

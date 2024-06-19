@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 const ListaProducto = () => {
   const [productos, setProductos] = useState([]);
   const [newProducto, setNewProducto] = useState({ nombre: '', descripcion: '', precio: '', proveedor: '', cantidad_inventario: '' });
+  const [editMode, setEditMode] = useState({});
 
   useEffect(() => {
     loadProductos();
@@ -60,6 +61,7 @@ const ListaProducto = () => {
         const producto = productos.find(prod => prod.id === id);
         await updateProducto(id, producto);
         loadProductos();
+        setEditMode({ ...editMode, [id]: false });
         Swal.fire(
           '¡Editado!',
           'El producto ha sido editado.',
@@ -156,44 +158,73 @@ const ListaProducto = () => {
         {productos.map(producto => (
           <li key={producto.id} className="bg-white p-4 rounded-lg shadow-lg flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 flex-1">
-              <input
-                type="text"
-                value={producto.nombre}
-                onChange={(e) => handleProductoChange(producto.id, 'nombre', e.target.value)}
-                className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-              <input
-                type="text"
-                value={producto.descripcion}
-                onChange={(e) => handleProductoChange(producto.id, 'descripcion', e.target.value)}
-                className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-              <input
-                type="text"
-                value={producto.precio}
-                onChange={(e) => handleProductoChange(producto.id, 'precio', e.target.value)}
-                className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-              <input
-                type="text"
-                value={producto.proveedor}
-                onChange={(e) => handleProductoChange(producto.id, 'proveedor', e.target.value)}
-                className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-              <input
-                type="number"
-                value={producto.cantidad_inventario}
-                onChange={(e) => handleProductoChange(producto.id, 'cantidad_inventario', e.target.value)}
-                className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
+              {editMode[producto.id] ? (
+                <input
+                  type="text"
+                  value={producto.nombre}
+                  onChange={(e) => handleProductoChange(producto.id, 'nombre', e.target.value)}
+                  className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              ) : (
+                <span>{producto.nombre}</span>
+              )}
+              {editMode[producto.id] ? (
+                <input
+                  type="text"
+                  value={producto.descripcion}
+                  onChange={(e) => handleProductoChange(producto.id, 'descripcion', e.target.value)}
+                  className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              ) : (
+                <span>{producto.descripcion}</span>
+              )}
+              {editMode[producto.id] ? (
+                <input
+                  type="text"
+                  value={producto.precio}
+                  onChange={(e) => handleProductoChange(producto.id, 'precio', e.target.value)}
+                  className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              ) : (
+                <span>{producto.precio}</span>
+              )}
+              {editMode[producto.id] ? (
+                <input
+                  type="text"
+                  value={producto.proveedor}
+                  onChange={(e) => handleProductoChange(producto.id, 'proveedor', e.target.value)}
+                  className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              ) : (
+                <span>{producto.proveedor}</span>
+              )}
+              {editMode[producto.id] ? (
+                <input
+                  type="number"
+                  value={producto.cantidad_inventario}
+                  onChange={(e) => handleProductoChange(producto.id, 'cantidad_inventario', e.target.value)}
+                  className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              ) : (
+                <span>{producto.cantidad_inventario}</span>
+              )}
             </div>
             <div className="mt-4 sm:mt-0 sm:ml-4 flex space-x-2">
-              <button 
-                onClick={() => handleUpdate(producto.id)} 
-                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
-              >
-                Editar
-              </button>
+              {editMode[producto.id] ? (
+                <button 
+                  onClick={() => handleUpdate(producto.id)} 
+                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
+                >
+                  Guardar
+                </button>
+              ) : (
+                <button 
+                  onClick={() => setEditMode({ ...editMode, [producto.id]: true })} 
+                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
+                >
+                  Editar
+                </button>
+              )}
               <button 
                 onClick={() => handleDelete(producto.id)} 
                 className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"

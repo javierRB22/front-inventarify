@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -18,8 +18,16 @@ const Login = () => {
     }).then((response) => {
       console.log(response);
       if (response.data.message) {
+        // Cuando hay un mensaje de error
         setLoginStatus(response.data.message);
+        Swal.fire({
+          title: 'Error al iniciar sesión',
+          text: response.data.message,
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
       } else {
+        // Cuando el inicio de sesión es exitoso
         setLoginStatus(response.data[0].email);
         Swal.fire({
           title: 'Inicio de sesión exitoso',
@@ -31,12 +39,23 @@ const Login = () => {
         });
       }
     }).catch(() => {
-      setLoginStatus("Error al iniciar sesión");
+      // Error general al intentar iniciar sesión
+      setLoginStatus("Error al iniciar sesión. Por favor, intenta nuevamente.");
+      Swal.fire({
+        title: 'Error',
+        text: 'Hubo un problema al intentar iniciar sesión. Por favor, intenta nuevamente.',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
     });
   };
 
+  useEffect(()=>{
+    localStorage.setItem('email',loginStatus)
+  },[loginStatus])
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-green-200 ">
       <div className="w-full md:w-3/4 lg:w-1/2 bg-white rounded-lg shadow-xl p-10">
         <form>
           <div className="flex flex-col items-center mb-6">
