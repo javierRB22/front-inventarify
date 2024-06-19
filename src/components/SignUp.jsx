@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import backgroundImg from '../assets/imagenes/signUp.svg'
 
 
+
 const SignUp = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");

@@ -40,3 +40,8 @@
 .read-the-docs {
   color: #888;
 }
+.mision-img,
+.vision-img {
+  transition: transform 0.3s ease-in-out;
+}
+
