@@ -2,8 +2,8 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { Outlet, useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useEffect } from "react";
-import backgroundImg from '../assets/imagenes/MISION.jpg';
-import backgroundVision from '../assets/imagenes/vision.png';
+import backgroundImg from "../assets/imagenes/MISION.jpg";
+import backgroundVision from "../assets/imagenes/vision.png";
 
 const Root = () => {
   const location = useLocation();
@@ -141,13 +141,13 @@ const Root = () => {
           <>
             <div className="flex flex-col min-h-screen animate-fade-in-left">
               <header className="bg-black text-white py-8 text-center">
-                <h1 className="font-bold text-4xl">
+                <h1 className="font-bold uppercase text-green-600 text-4xl mt-8 mb-4 text-center cursor-pointer">
                   BIENVENIDOS A INVENTARIFY
                 </h1>
               </header>
               <main className="flex-grow container mx-auto px-4 py-8">
                 <section className="my-8">
-                  <h2 className="text-3xl font-bold mb-4">¿Quiénes Somos?</h2>
+                  <h2 className="text-3xl font-bold mb-4 text-green-600">¿Quiénes Somos?</h2>
                   <p className="text-lg leading-relaxed text-gray-700">
                     Bienvenido a Inventarify, el revolucionario sistema de
                     gestión de inventarios y control de ventas diseñado para
@@ -175,7 +175,7 @@ const Root = () => {
                   </p>
                 </section>
                 <section className="my-8">
-                  <h2 className="text-3xl font-bold mb-4">Valores</h2>
+                  <h2 className="text-3xl font-bold mb-4 text-green-600">Valores</h2>
                   <ul className="list-none pl-0">
                     {[
                       "Innovación y Tecnología",
@@ -242,7 +242,10 @@ const Root = () => {
                         "Convertirnos en el socio estratégico preferido de los comercios de barrio, siendo reconocidos por nuestra capacidad de innovación en la gestión de inventarios y ventas, contribuyendo así al fortalecimiento y expansión de estos negocios en un mercado competitivo y en constante evolución.",
                     },
                   ].map((image, index) => (
-                    <div key={index} className="relative w-full h-64 group overflow-hidden rounded-lg">
+                    <div
+                      key={index}
+                      className="relative w-full h-64 group overflow-hidden rounded-lg"
+                    >
                       <img
                         src={image.src}
                         alt={image.title}
