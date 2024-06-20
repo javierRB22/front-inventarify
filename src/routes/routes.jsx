@@ -230,6 +230,7 @@ const Root = () => {
                     ))}
                   </ul>
                 </section>
+                <hr></hr>
                 <section className="my-8 space-y-8">
                   {[
                     {
