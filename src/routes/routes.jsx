@@ -140,11 +140,14 @@ const Root = () => {
         {location.pathname === "/dashboard" && (
           <>
             <div className="flex flex-col min-h-screen animate-fade-in-left">
-              <header className="bg-black text-white py-8 text-center">
+              <header className=" text-white py-8 text-center">
                 <h1 className="font-bold uppercase text-green-600 text-4xl mt-8 mb-4 text-center cursor-pointer">
                   BIENVENIDOS A INVENTARIFY
                 </h1>
+                
+
               </header>
+              <hr className="border-t-2 border-gray-400"/>
               <main className="flex-grow container mx-auto px-4 py-8">
                 <section className="my-8">
                   <h2 className="text-3xl font-bold mb-4 text-green-600">¿Quiénes Somos?</h2>
