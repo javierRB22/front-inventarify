@@ -7,6 +7,8 @@ const ListaCliente = () => {
   const [clientes, setClientes] = useState([]);
   const [newCliente, setNewCliente] = useState({ nombre: '', apellido: '', direccion: '', email: '', telefono: '' });
   const [editMode, setEditMode] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     loadClientes();
@@ -23,7 +25,6 @@ const ListaCliente = () => {
   };
 
   const handleCreate = async () => {
-    // Validar todos los campos obligatorios
     if (!newCliente.nombre || !newCliente.apellido || !newCliente.direccion || !newCliente.email || !newCliente.telefono) {
       Swal.fire('Campos Requeridos', 'Por favor, completa todos los campos.', 'error');
       return;
@@ -43,11 +44,7 @@ const ListaCliente = () => {
         await createCliente(newCliente);
         loadClientes();
         setNewCliente({ nombre: '', apellido: '', direccion: '', email: '', telefono: '' });
-        Swal.fire(
-          '¡Añadido!',
-          'El cliente ha sido añadido.',
-          'success'
-        );
+        Swal.fire('¡Añadido!', 'El cliente ha sido añadido.', 'success');
       }
     });
   };
@@ -68,11 +65,7 @@ const ListaCliente = () => {
         await updateCliente(id, cliente);
         loadClientes();
         setEditMode({ ...editMode, [id]: false });
-        Swal.fire(
-          '¡Realizado!',
-          'El cliente ha sido modificado.',
-          'success'
-        );
+        Swal.fire('¡Realizado!', 'El cliente ha sido modificado.', 'success');
       }
     });
   };
@@ -91,11 +84,7 @@ const ListaCliente = () => {
       if (result.isConfirmed) {
         await deleteCliente(id);
         loadClientes();
-        Swal.fire(
-          '¡Eliminado!',
-          'El cliente ha sido eliminado.',
-          'success'
-        );
+        Swal.fire('¡Eliminado!', 'El cliente ha sido eliminado.', 'success');
       }
     });
   };
@@ -107,8 +96,11 @@ const ListaCliente = () => {
     setClientes(updatedClientes);
   };
 
+  const totalPages = Math.ceil(clientes.length / itemsPerPage);
+  const currentClients = clientes.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
   return (
-    <div className="p-6 bg-gray-100 min-h-screen overflow-x-hidden animate-fade-in-left">
+    <div className="p-6 bg-gray-300 min-h-screen overflow-x-hidden animate-fade-in-left">
       <h2 className="text-3xl font-bold text-center mb-8 text-green-600">CLIENTES</h2>
       <div className="bg-white p-6 rounded-lg shadow-lg mb-8">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -161,7 +153,7 @@ const ListaCliente = () => {
         </button>
       </div>
       <ul className="space-y-4">
-        {clientes.map(cliente => (
+        {currentClients.map(cliente => (
           <li key={cliente.id} className="bg-white p-4 rounded-lg shadow-lg flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {editMode[cliente.id] ? (
@@ -233,6 +225,19 @@ const ListaCliente = () => {
           </li>
         ))}
       </ul>
+      <div className="mt-6 flex justify-center space-x-2">
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentPage(index + 1)}
+            className={`px-4 py-2 rounded-lg shadow-lg ${
+              currentPage === index + 1 ? 'bg-green-500 text-white' : 'bg-white text-green-500 border border-green-500'
+            }`}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };

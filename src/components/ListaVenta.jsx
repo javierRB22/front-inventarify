@@ -1,25 +1,32 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
-import { getVentas, createVenta, updateVenta, deleteVenta } from '../services/ServicioVenta';
 import Swal from 'sweetalert2';
+import {
+  getFacturas,
+  createFactura,
+  updateFactura,
+  deleteFactura
+} from '../services/ServicioFactura';
 
-const ListaVenta = () => {
-  const [ventas, setVentas] = useState([]);
-  const [newVenta, setNewVenta] = useState({ fecha_venta: '', total_ventas: '' });
+const ListaFactura = () => {
+  const [facturas, setFacturas] = useState([]);
+  const [newFactura, setNewFactura] = useState({ Fecha: '', Cantidad_Producto: '', Cliente: '' });
   const [editMode, setEditMode] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Número de facturas por página
 
   useEffect(() => {
-    loadVentas();
+    loadFacturas();
   }, []);
 
-  const loadVentas = async () => {
-    const data = await getVentas();
-    setVentas(data);
+  const loadFacturas = async () => {
+    const data = await getFacturas();
+    setFacturas(data);
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewVenta({ ...newVenta, [name]: value });
+    setNewFactura({ ...newFactura, [name]: value });
   };
 
   const confirmAction = async (title, text, confirmButtonText, actionFunction, id = null) => {
@@ -35,24 +42,16 @@ const ListaVenta = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         if (id === null) {
-          await actionFunction(newVenta);
-          setNewVenta({ fecha_venta: '', total_ventas: '' });
-          await loadVentas(); // Actualiza la lista después de añadir
-          Swal.fire(
-            '¡Añadida!',
-            'La venta ha sido añadida.',
-            'success'
-          );
+          await actionFunction(newFactura);
+          setNewFactura({ Fecha: '', Cantidad_Producto: '', Cliente: '' });
+          await loadFacturas(); // Actualiza la lista después de añadir
+          Swal.fire('¡Añadida!', 'La factura ha sido añadida.', 'success');
         } else {
-          const venta = ventas.find(v => v.id === id);
-          await actionFunction(id, venta);
-          await loadVentas(); // Actualiza la lista después de editar
+          const factura = facturas.find(fac => fac.id === id);
+          await actionFunction(id, factura);
+          await loadFacturas(); // Actualiza la lista después de editar
           setEditMode(null); // Salir del modo de edición
-          Swal.fire(
-            '¡Realizado!',
-            'La venta ha sido modificada.',
-            'success'
-          );
+          Swal.fire('¡Guardado!', 'La factura ha sido guardada.', 'success');
         }
       }
     });
@@ -60,16 +59,16 @@ const ListaVenta = () => {
 
   const handleCreate = async () => {
     // Validar campos requeridos
-    if (!newVenta.fecha_venta || !newVenta.total_ventas) {
+    if (!newFactura.Fecha || !newFactura.Cantidad_Producto || !newFactura.Cliente) {
       Swal.fire('Campos Requeridos', 'Por favor, completa todos los campos.', 'error');
       return;
     }
 
     confirmAction(
       '¿Estás seguro?',
-      '¿Quieres añadir esta venta?',
+      '¿Quieres añadir esta factura?',
       'Sí, añadir',
-      createVenta
+      createFactura
     );
   };
 
@@ -80,9 +79,9 @@ const ListaVenta = () => {
   const handleSave = async (id) => {
     confirmAction(
       '¿Estás seguro?',
-      '¿Quieres guardar los cambios en esta venta?',
+      '¿Quieres guardar los cambios en esta factura?',
       'Sí, guardar',
-      updateVenta,
+      updateFactura,
       id
     );
   };
@@ -90,38 +89,53 @@ const ListaVenta = () => {
   const handleDelete = async (id) => {
     confirmAction(
       '¿Estás seguro?',
-      '¿Quieres eliminar esta venta?',
+      '¿Quieres eliminar esta factura?',
       'Sí, eliminar',
-      deleteVenta,
+      deleteFactura,
       id
     );
   };
 
-  const handleVentaChange = (id, field, value) => {
-    const updatedVentas = ventas.map(v =>
-      v.id === id ? { ...v, [field]: value } : v
+  const handleFacturaChange = (id, field, value) => {
+    const updatedFacturas = facturas.map(fac =>
+      fac.id === id ? { ...fac, [field]: value } : fac
     );
-    setVentas(updatedVentas);
+    setFacturas(updatedFacturas);
   };
 
+  // Paginación
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = facturas.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
-    <div className="p-6 bg-gray-100 min-h-screen overflow-x-hidden animate-fade-in-left">
-      <h2 className="text-3xl font-bold text-center mb-8 text-green-600">VENTAS</h2>
+    <div className="p-6 bg-gray-300 min-h-screen overflow-x-hidden animate-fade-in-left">
+      <h2 className="text-3xl font-bold text-center mb-8 text-green-600">FACTURAS</h2>
       <div className="bg-white p-6 rounded-lg shadow-lg mb-8">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
           <input
             type="date"
-            name="fecha_venta"
-            placeholder="Fecha de Venta"
-            value={newVenta.fecha_venta}
+            name="Fecha"
+            placeholder="Fecha"
+            value={newFactura.Fecha}
             onChange={handleInputChange}
             className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           />
           <input
             type="number"
-            name="total_ventas"
-            placeholder="Total Ventas"
-            value={newVenta.total_ventas}
+            name="Cantidad_Producto"
+            placeholder="Cantidad de Producto"
+            value={newFactura.Cantidad_Producto}
+            onChange={handleInputChange}
+            className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+          <input
+            type="text"
+            name="Cliente"
+            placeholder="Cliente"
+            value={newFactura.Cliente}
             onChange={handleInputChange}
             className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           />
@@ -130,51 +144,58 @@ const ListaVenta = () => {
           onClick={handleCreate}
           className="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg w-full"
         >
-          Añadir Venta
+          Añadir Factura
         </button>
       </div>
       <ul className="space-y-4">
-        {ventas.map(venta => (
-          <li key={venta.id} className="bg-white p-4 rounded-lg shadow-lg flex flex-col sm:flex-row sm:items-center sm:justify-between">
-            {editMode !== venta.id ? (
+        {currentItems.map(factura => (
+          <li key={factura.id} className="bg-white p-4 rounded-lg shadow-lg flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            {editMode !== factura.id ? (
               <>
-                <div>{venta.fecha_venta}</div>
-                <div>{venta.total_ventas}</div>
+                <div>{factura.Fecha}</div>
+                <div>{factura.Cantidad_Producto}</div>
+                <div>{factura.Cliente}</div>
               </>
             ) : (
               <>
                 <input
                   type="date"
-                  value={venta.fecha_venta}
-                  onChange={(e) => handleVentaChange(venta.id, 'fecha_venta', e.target.value)}
+                  value={factura.Fecha}
+                  onChange={(e) => handleFacturaChange(factura.id, 'Fecha', e.target.value)}
                   className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
                 <input
                   type="number"
-                  value={venta.total_ventas}
-                  onChange={(e) => handleVentaChange(venta.id, 'total_ventas', e.target.value)}
+                  value={factura.Cantidad_Producto}
+                  onChange={(e) => handleFacturaChange(factura.id, 'Cantidad_Producto', e.target.value)}
+                  className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+                <input
+                  type="text"
+                  value={factura.Cliente}
+                  onChange={(e) => handleFacturaChange(factura.id, 'Cliente', e.target.value)}
                   className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
               </>
             )}
             <div className="mt-4 sm:mt-0 sm:ml-4 flex space-x-2">
-              {editMode !== venta.id ? (
+              {editMode !== factura.id ? (
                 <button
-                  onClick={() => handleUpdate(venta.id)}
+                  onClick={() => handleUpdate(factura.id)}
                   className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
                 >
                   Editar
                 </button>
               ) : (
                 <button
-                  onClick={() => handleSave(venta.id)}
+                  onClick={() => handleSave(factura.id)}
                   className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
                 >
                   Guardar
                 </button>
               )}
               <button
-                onClick={() => handleDelete(venta.id)}
+                onClick={() => handleDelete(factura.id)}
                 className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
               >
                 Eliminar
@@ -183,8 +204,20 @@ const ListaVenta = () => {
           </li>
         ))}
       </ul>
+      {/* Pagination controls */}
+      <div className="mt-4 flex justify-center">
+        {[...Array(Math.ceil(facturas.length / itemsPerPage)).keys()].map(number => (
+          <button
+            key={number + 1}
+            onClick={() => paginate(number + 1)}
+            className={`mx-1 px-3 py-1 rounded-lg ${currentPage === number + 1 ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700 hover:bg-gray-400'}`}
+          >
+            {number + 1}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };
 
-export default ListaVenta;
+export default ListaFactura;

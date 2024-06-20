@@ -15,6 +15,8 @@ const CategoryList = () => {
     descripcion: "",
   });
   const [editMode, setEditMode] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const categoriesPerPage = 10;
 
   useEffect(() => {
     loadCategories();
@@ -107,8 +109,38 @@ const CategoryList = () => {
     setCategories(updatedCategories);
   };
 
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const indexOfLastCategory = currentPage * categoriesPerPage;
+  const indexOfFirstCategory = indexOfLastCategory - categoriesPerPage;
+  const currentCategories = categories.slice(indexOfFirstCategory, indexOfLastCategory);
+
+  const renderPagination = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= Math.ceil(categories.length / categoriesPerPage); i++) {
+      pageNumbers.push(i);
+    }
+    return (
+      <div className="flex justify-center mt-4">
+        {pageNumbers.map((number) => (
+          <button
+            key={number}
+            onClick={() => handlePageChange(number)}
+            className={`px-3 py-1 mx-1 rounded ${
+              currentPage === number ? "bg-green-500 text-white" : "bg-gray-300"
+            }`}
+          >
+            {number}
+          </button>
+        ))}
+      </div>
+    );
+  };
+
   return (
-    <div className="p-6 bg-gray-100 min-h-screen overflow-x-hidden animate-fade-in-left">
+    <div className="p-6 bg-gray-300 min-h-screen overflow-x-hidden animate-fade-in-left">
       <h2 className="text-3xl font-bold text-center mb-8 text-green-600">CATEGORIAS</h2>
       <div className="bg-white p-6 rounded-lg shadow-lg mb-8">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -137,7 +169,7 @@ const CategoryList = () => {
         </div>
       </div>
       <ul className="space-y-4">
-        {categories.map((category) => (
+        {currentCategories.map((category) => (
           <li
             key={category.id}
             className="bg-white p-4 rounded-lg shadow-lg flex flex-col sm:flex-row sm:items-center sm:justify-between"
@@ -200,6 +232,7 @@ const CategoryList = () => {
           </li>
         ))}
       </ul>
+      {renderPagination()}
     </div>
   );
 };

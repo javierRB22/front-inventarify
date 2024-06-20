@@ -16,6 +16,8 @@ const ListaProveedor = () => {
     telefono: "",
   });
   const [editMode, setEditMode] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     loadProveedores();
@@ -108,15 +110,18 @@ const ListaProveedor = () => {
     );
   };
 
-  const handleProveedorChange = async (id, field, value) => {
+  const handleProveedorChange = (id, field, value) => {
     const updatedProveedores = proveedores.map((prov) =>
       prov.id === id ? { ...prov, [field]: value } : prov
     );
     setProveedores(updatedProveedores);
   };
 
+  const totalPages = Math.ceil(proveedores.length / itemsPerPage);
+  const currentProveedores = proveedores.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
   return (
-    <div className="p-6 bg-gray-100 min-h-screen overflow-x-hidden animate-fade-in-left">
+    <div className="p-6 bg-gray-300 min-h-screen overflow-x-hidden animate-fade-in-left">
       <h2 className="text-3xl font-bold text-center mb-8 text-green-600">PROVEEDORES</h2>
       <div className="bg-white p-6 rounded-lg shadow-lg mb-8">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
@@ -144,17 +149,16 @@ const ListaProveedor = () => {
             onChange={handleInputChange}
             className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           />
-
         </div>
         <button
-            onClick={handleCreate}
-            className="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg sm:col-span-2 w-full"
-          >
-            Añadir Categoría
-          </button>
+          onClick={handleCreate}
+          className="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg sm:col-span-2 w-full"
+        >
+          Añadir Proveedor
+        </button>
       </div>
       <ul className="space-y-4">
-        {proveedores.map((proveedor) => (
+        {currentProveedores.map((proveedor) => (
           <li
             key={proveedor.id}
             className="bg-white p-4 rounded-lg shadow-lg flex flex-row items-center justify-between"
@@ -231,6 +235,19 @@ const ListaProveedor = () => {
           </li>
         ))}
       </ul>
+      <div className="mt-6 flex justify-center space-x-2">
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentPage(index + 1)}
+            className={`px-4 py-2 rounded-lg shadow-lg ${
+              currentPage === index + 1 ? 'bg-green-500 text-white' : 'bg-white text-green-500 border border-green-500'
+            }`}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };

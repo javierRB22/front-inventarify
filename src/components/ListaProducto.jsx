@@ -7,6 +7,8 @@ const ListaProducto = () => {
   const [productos, setProductos] = useState([]);
   const [newProducto, setNewProducto] = useState({ nombre: '', descripcion: '', precio: '', proveedor: '', cantidad_inventario: '' });
   const [editMode, setEditMode] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const productosPerPage = 10;
 
   useEffect(() => {
     loadProductos();
@@ -114,8 +116,38 @@ const ListaProducto = () => {
     setProductos(updatedProductos);
   };
 
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const indexOfLastProducto = currentPage * productosPerPage;
+  const indexOfFirstProducto = indexOfLastProducto - productosPerPage;
+  const currentProductos = productos.slice(indexOfFirstProducto, indexOfLastProducto);
+
+  const renderPagination = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= Math.ceil(productos.length / productosPerPage); i++) {
+      pageNumbers.push(i);
+    }
+    return (
+      <div className="flex justify-center mt-4">
+        {pageNumbers.map(number => (
+          <button 
+            key={number} 
+            onClick={() => handlePageChange(number)}
+            className={`px-3 py-1 mx-1 rounded ${
+              currentPage === number ? 'bg-green-500 text-white' : 'bg-gray-300'
+            }`}
+          >
+            {number}
+          </button>
+        ))}
+      </div>
+    );
+  };
+
   return (
-    <div className="p-6 bg-gray-100 min-h-screen overflow-x-hidden animate-fade-in-left">
+    <div className="p-6 bg-gray-300 min-h-screen overflow-x-hidden animate-fade-in-left">
       <h2 className="text-3xl font-bold text-center mb-8 text-green-600">PRODUCTOS</h2>
       <div className="bg-white p-6 rounded-lg shadow-lg mb-8">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 ">
@@ -168,7 +200,7 @@ const ListaProducto = () => {
         </button>
       </div>
       <ul className="space-y-4">
-        {productos.map(producto => (
+        {currentProductos.map(producto => (
           <li key={producto.id} className="bg-white p-4 rounded-lg shadow-lg flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 flex-1">
               {editMode[producto.id] ? (
@@ -248,6 +280,7 @@ const ListaProducto = () => {
           </li>
         ))}
       </ul>
+      {renderPagination()}
     </div>
   );
 };

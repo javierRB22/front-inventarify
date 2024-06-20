@@ -1,12 +1,19 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
-import { getDepartamentos, createDepartamento, updateDepartamento, deleteDepartamento } from '../services/ServicioDepartamento';
 import Swal from 'sweetalert2';
+import {
+  getDepartamentos,
+  createDepartamento,
+  updateDepartamento,
+  deleteDepartamento
+} from '../services/ServicioDepartamento';
 
 const ListaDepartamento = () => {
   const [departamentos, setDepartamentos] = useState([]);
   const [newDepartamento, setNewDepartamento] = useState({ nombre: '', descripcion: '' });
   const [editMode, setEditMode] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     loadDepartamentos();
@@ -23,7 +30,6 @@ const ListaDepartamento = () => {
   };
 
   const handleCreate = async () => {
-    // Validar campos obligatorios
     if (!newDepartamento.nombre || !newDepartamento.descripcion) {
       Swal.fire('Campos Requeridos', 'Por favor, completa todos los campos.', 'error');
       return;
@@ -53,21 +59,13 @@ const ListaDepartamento = () => {
           await actionFunction(newDepartamento);
           setNewDepartamento({ nombre: '', descripcion: '' });
           await loadDepartamentos(); // Actualiza la lista después de añadir
-          Swal.fire(
-            '¡Añadido!',
-            'El departamento ha sido añadido.',
-            'success'
-          );
+          Swal.fire('¡Añadido!', 'El departamento ha sido añadido.', 'success');
         } else {
           const departamento = departamentos.find(dep => dep.id === id);
           await actionFunction(id, departamento);
           loadDepartamentos();
           setEditMode(null);
-          Swal.fire(
-            '¡Realizado!',
-            'El departamento ha sido modificado.',
-            'success'
-          );
+          Swal.fire('¡Realizado!', 'El departamento ha sido modificado.', 'success');
         }
       }
     });
@@ -104,8 +102,15 @@ const ListaDepartamento = () => {
     setDepartamentos(updatedDepartamentos);
   };
 
+  // Paginación
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = departamentos.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
-    <div className="p-6 bg-gray-100 min-h-screen overflow-x-hidden animate-fade-in-left">
+    <div className="p-6 bg-gray-300 min-h-screen overflow-x-hidden animate-fade-in-left">
       <h2 className="text-3xl font-bold text-center mb-8 text-green-600">DEPARTAMENTOS</h2>
       <div className="bg-white p-6 rounded-lg shadow-lg mb-8">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -134,7 +139,7 @@ const ListaDepartamento = () => {
         </button>
       </div>
       <ul className="space-y-4">
-        {departamentos.map(departamento => (
+        {currentItems.map(departamento => (
           <li key={departamento.id} className="bg-white p-4 rounded-lg shadow-lg flex flex-col sm:flex-row sm:items-center sm:justify-between">
             {editMode !== departamento.id ? (
               <>
@@ -183,6 +188,18 @@ const ListaDepartamento = () => {
           </li>
         ))}
       </ul>
+      {/* Pagination controls */}
+      <div className="mt-4 flex justify-center">
+        {[...Array(Math.ceil(departamentos.length / itemsPerPage)).keys()].map(number => (
+          <button
+            key={number + 1}
+            onClick={() => paginate(number + 1)}
+            className={`mx-1 px-3 py-1 rounded-lg ${currentPage === number + 1 ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700 hover:bg-gray-400'}`}
+          >
+            {number + 1}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };
