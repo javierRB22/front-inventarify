@@ -49,8 +49,8 @@ const ListaVenta = () => {
           await loadVentas(); // Actualiza la lista después de editar
           setEditMode(null); // Salir del modo de edición
           Swal.fire(
-            '¡Guardado!',
-            'La venta ha sido guardada.',
+            '¡Realizado!',
+            'La venta ha sido modificada.',
             'success'
           );
         }
@@ -59,6 +59,12 @@ const ListaVenta = () => {
   };
 
   const handleCreate = async () => {
+    // Validar campos requeridos
+    if (!newVenta.fecha_venta || !newVenta.total_ventas) {
+      Swal.fire('Campos Requeridos', 'Por favor, completa todos los campos.', 'error');
+      return;
+    }
+
     confirmAction(
       '¿Estás seguro?',
       '¿Quieres añadir esta venta?',
@@ -122,7 +128,7 @@ const ListaVenta = () => {
         </div>
         <button
           onClick={handleCreate}
-          className="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
+          className="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg w-full"
         >
           Añadir Venta
         </button>

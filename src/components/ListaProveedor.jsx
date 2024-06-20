@@ -53,12 +53,20 @@ const ListaProveedor = () => {
   };
 
   const handleCreate = async () => {
-    confirmAction(
-      '¿Estás seguro?',
-      '¿Quieres añadir este proveedor?',
-      'Sí, añadir',
-      createProveedor
-    );
+    if (newProveedor.nombre.trim() === '' || newProveedor.direccion.trim() === '' || newProveedor.telefono.trim() === '') {
+      await Swal.fire({
+        icon: 'error',
+        title: 'Campos requeridos',
+        text: 'Por favor completa todos los campos.',
+      });
+    } else {
+      confirmAction(
+        '¿Estás seguro?',
+        '¿Quieres añadir este proveedor?',
+        'Sí, añadir',
+        createProveedor
+      );
+    }
   };
 
   const handleUpdate = async (id) => {
@@ -117,12 +125,12 @@ const ListaProveedor = () => {
             onChange={handleInputChange}
             className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           />
-          <button 
-            onClick={handleCreate} 
-            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
-          >
-            Añadir Proveedor
-          </button>
+          <button
+          onClick={handleCreate}
+          className="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg w-full"
+        >
+          Añadir Proveedor
+        </button>
         </div>
       </div>
       <ul className="space-y-4">
@@ -158,22 +166,22 @@ const ListaProveedor = () => {
             )}
             <div className="flex space-x-2">
               {editMode === proveedor.id ? (
-                <button 
-                  onClick={() => handleUpdate(proveedor.id)} 
+                <button
+                  onClick={() => handleUpdate(proveedor.id)}
                   className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
                 >
                   Guardar
                 </button>
               ) : (
-                <button 
-                  onClick={() => setEditMode(proveedor.id)} 
+                <button
+                  onClick={() => setEditMode(proveedor.id)}
                   className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
                 >
                   Editar
                 </button>
               )}
-              <button 
-                onClick={() => handleDelete(proveedor.id)} 
+              <button
+                onClick={() => handleDelete(proveedor.id)}
                 className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
               >
                 Eliminar

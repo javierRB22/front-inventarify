@@ -2,9 +2,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import backgroundImg from '../assets/imagenes/signUp.svg'
-
-
+import backgroundImg from '../assets/imagenes/signUp.svg';
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -65,16 +63,16 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen h-screen bg-grey-200">
-      <div className="flex w-full h-full">
+    <div className="flex items-center justify-center min-h-screen h-screen bg-grey-200 animate-fade-in-left overflow-hidden">
+      <div className="flex w-full h-full overflow-hidden">
         <div className="w-3/5 h-full">
 
-          <img src={backgroundImg} alt="Background" className="object-cover w-full" />
+          <img src={backgroundImg} alt="Background" className="object-cover w-full h-full" />
         </div>
         <div className="w-2/5 h-full bg-white rounded-l-lg shadow-xl p-10 flex items-center justify-center">
           <form className="w-full">
             <div className="flex items-center mb-6">
-              <h1 className="text-3xl font-extrabold text-center w-full text-gray-800">CREA TU CUENTA</h1>
+              <h1 className="text-3xl font-extrabold text-center w-full text-green-800">CREA TU CUENTA</h1>
             </div>
             {error && (
               <div className="mb-6">
@@ -84,7 +82,7 @@ const SignUp = () => {
             <div className="mb-6">
               <input
                 type="text"
-                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 shadow-md"
                 placeholder="Ingrese su nombre"
                 value={name}
                 onChange={(e) => { setName(e.target.value) }} required
@@ -93,7 +91,7 @@ const SignUp = () => {
             <div className="mb-6">
               <input
                 type="email"
-                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 shadow-md"
                 placeholder="Ingrese su Email"
                 value={email}
                 onChange={(e) => { setEmail(e.target.value) }} required
@@ -102,7 +100,7 @@ const SignUp = () => {
             <div className="mb-6">
               <input
                 type="password"
-                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 shadow-md"
                 placeholder="Ingrese su contraseña"
                 value={password}
                 onChange={(e) => { setPassword(e.target.value) }} required

@@ -22,7 +22,20 @@ const ListaProducto = () => {
     setNewProducto({ ...newProducto, [name]: value });
   };
 
+  const validateFields = () => {
+    const { nombre, descripcion, precio, proveedor, cantidad_inventario } = newProducto;
+    if (!nombre || !descripcion || !precio || !proveedor || !cantidad_inventario) {
+      Swal.fire('Campos Requeridos', 'Por favor, completa todos los campos.', 'error');
+      return;
+    }
+    return true;
+  };
+
   const handleCreate = async () => {
+    if (!validateFields()) {
+      return;
+    }
+
     Swal.fire({
       title: '¿Estás seguro?',
       text: "¿Quieres añadir este producto?",
@@ -63,8 +76,8 @@ const ListaProducto = () => {
         loadProductos();
         setEditMode({ ...editMode, [id]: false });
         Swal.fire(
-          '¡Editado!',
-          'El producto ha sido editado.',
+          '¡Realizado!',
+          'El producto ha sido modificado.',
           'success'
         );
       }
@@ -147,11 +160,11 @@ const ListaProducto = () => {
             className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
-        <button 
-          onClick={handleCreate} 
-          className="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
+        <button
+          onClick={handleCreate}
+          className="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg w-full"
         >
-          Añadir Producto
+          Añadir Factura
         </button>
       </div>
       <ul className="space-y-4">

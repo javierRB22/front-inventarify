@@ -59,6 +59,12 @@ const ListaFactura = () => {
   };
 
   const handleCreate = async () => {
+    // Validar campos requeridos
+    if (!newFactura.Fecha || !newFactura.Cantidad_Producto || !newFactura.Cliente) {
+      Swal.fire('Campos Requeridos', 'Por favor, completa todos los campos.', 'error');
+      return;
+    }
+
     confirmAction(
       '¿Estás seguro?',
       '¿Quieres añadir esta factura?',
@@ -130,7 +136,7 @@ const ListaFactura = () => {
         </div>
         <button
           onClick={handleCreate}
-          className="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
+          className="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg w-full"
         >
           Añadir Factura
         </button>

@@ -23,6 +23,12 @@ const CategoryList = () => {
   };
 
   const handleCreate = async () => {
+    // Validar que los campos no estén vacíos
+    if (!newCategory.nombre.trim() || !newCategory.descripcion.trim()) {
+      Swal.fire('Campos Requeridos', 'Por favor, completa todos los campos.', 'error');
+      return;
+    }
+
     Swal.fire({
       title: '¿Estás seguro?',
       text: "¿Quieres añadir esta categoría?",
@@ -63,8 +69,8 @@ const CategoryList = () => {
         loadCategories();
         setEditMode({ ...editMode, [id]: false });
         Swal.fire(
-          '¡Editado!',
-          'La categoría ha sido editada.',
+          '¡Realizado!',
+          'La categoría ha sido modificada.',
           'success'
         );
       }
@@ -122,12 +128,12 @@ const CategoryList = () => {
             onChange={handleInputChange}
             className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           />
-          <button 
-            onClick={handleCreate} 
-            className="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
-          >
-            Añadir categoría
-          </button>
+         <button
+          onClick={handleCreate}
+          className="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg w-full"
+        >
+          Añadir Categoría
+        </button>
         </div>
       </div>
       <ul className="space-y-4">
@@ -159,7 +165,7 @@ const CategoryList = () => {
               {editMode[category.id] ? (
                 <button 
                   onClick={() => handleUpdate(category.id)} 
-                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
+                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
                 >
                   Guardar
                 </button>

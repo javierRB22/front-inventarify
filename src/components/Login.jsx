@@ -57,7 +57,7 @@ const Login = () => {
   }, [loginStatus]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen h-screen bg-grey-100">
+    <div className="flex items-center justify-center min-h-screen h-screen bg-grey-100 animate-fade-in-left">
       <div className="flex w-full h-full">
         <div className="w-3/5 h-full">
         <img src={backgroundImg} alt="Background" className="object-cover  h-full w-full" />
@@ -65,13 +65,13 @@ const Login = () => {
         <div className="w-2/5 h-full bg-white rounded-l-lg shadow-xl p-10 flex items-center justify-center">
           <form className="w-full">
             <div className="flex flex-col items-center mb-6">
-              <h1 className="text-3xl font-extrabold text-center w-full text-gray-800">INGRESA CON TU CUENTA</h1>
+              <h1 className="text-3xl font-extrabold text-center w-full text-green-800">INGRESA CON TU CUENTA</h1>
               <h2 className="text-red-500 text-lg text-center mt-2">{loginStatus}</h2>
             </div>
             <div className="mb-6">
               <input
                 type="email"
-                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 shadow-md"
                 placeholder="Digita tu correo"
                 value={email}
                 onChange={(e) => { setEmail(e.target.value) }} required
@@ -80,7 +80,7 @@ const Login = () => {
             <div className="mb-6 relative">
               <input
                 type={showPassword ? "text" : "password"}
-                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 shadow-md"
                 placeholder="Digita tu contraseña"
                 value={password}
                 onChange={(e) => { setPassword(e.target.value) }} required
@@ -112,7 +112,7 @@ const Login = () => {
               <button type="button" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg text-lg" onClick={login}>
                 Iniciar sesión
               </button>
-              <p className="text-lg font-bold mt-4 mb-0">No tienes una cuenta aun? <a href="SignUp" className="text-green-500 hover:text-green-700">Registrate</a></p>
+              <p className="text-lg font-bold mt-4 mb-0">No tienes una cuenta aun? <a href="SignUp" className="text-green-500 hover:text-green-700 shadow-xl">Registrate</a></p>
             </div>
           </form>
         </div>
